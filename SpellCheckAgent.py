@@ -12,7 +12,7 @@ class TextToken:
         "violet": "bc82ff"
     }
     @staticmethod
-    def deco(text, color="000000", b=False, i=False, u=False):
+    def deco(text, color=False, b=False, i=False, u=False):
         additional = ""
         if b:
             additional += "1;"
@@ -20,11 +20,12 @@ class TextToken:
             additional += "3;"
         if u:
             additional += "4;"
-        pre = f"\033[{additional}38;2;{int(color[:2], base=16)};{int(color[2:4], base=16)};{int(color[4:], base=16)}m"
+        col = f"38;2;{int(color[:2], base=16)};{int(color[2:4], base=16)};{int(color[4:], base=16)}" if color else "39;49"
+        pre = f"\033[{additional}{col}m"
         post = "\033[0m"
         return pre + text + post
 
-    def __init__(self, value, color="000000", b=False, i=False, u=False):
+    def __init__(self, value, color=False, b=False, i=False, u=False):
         self.value = value
         self.color = color
         self.underline = u
@@ -37,7 +38,7 @@ class TextToken:
         return self.ANSI_format
 
     def to_html(self):
-        if self.color != "000000":
+        if self.color:
             return f"""<span style="color:#{self.color}">{self.value}</span>"""
         if self.underline:
             return f"""<u>{self.value}</u>"""
@@ -52,14 +53,14 @@ class Sentence:
 
     def parser(self, html: str):
         tokens = list()
-        v, c, u, opened = "", "000000", False, False
+        v, c, u, opened = "", False, False, False
         for i, j in re.findall(r"(<[^>]+>)|([^<]*)", html):
             tkn = i if len(i) else j
             if len(tkn) == 0:
                 continue
             if tkn[0] == '<' and tkn[1] == '/':
                 tokens.append(TextToken(v, color=c, u=u))
-                v, c, u, opened = "", "000000", False, False
+                v, c, u, opened = "", False, False, False
             elif tkn[0] == '<':
                 opened = True
                 attr = re.search(r"'([a-zA-Z_]+)'", tkn)
