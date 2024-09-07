@@ -7,7 +7,7 @@ import re
 class TextToken:
     color_map = {
         "red": "ff7961",
-        "green": "76e889",
+        "green": "00de51",
         "blue": "709bff",
         "violet": "bc82ff"
     }
@@ -37,7 +37,12 @@ class TextToken:
         return self.ANSI_format
 
     def to_html(self):
-        return f"""<span color="#{self.color}">{self.value}</span>"""
+        if self.color != "000000":
+            return f"""<span style="color:#{self.color}">{self.value}</span>"""
+        if self.underline:
+            return f"""<u>{self.value}</u>"""
+        else:
+            return self.value
 
 
 class Sentence:
@@ -77,7 +82,7 @@ class Sentence:
         print(''.join([x.to_console() for x in self.tokenized]))
 
     def html_output(self):
-        print(f"<div>{''.join([x.to_html() for x in self.tokenized])}<div>")
+        print(f"<p>{''.join([x.to_html() for x in self.tokenized])}</p>")
 
 
 class Agent:
@@ -130,3 +135,6 @@ if __name__ == "__main__":
     print(f"맞춤법 오류 {err}개 있음")
     raw.display()
     mod.display()
+
+    raw.html_output()
+    mod.html_output()
