@@ -135,6 +135,3 @@ if __name__ == "__main__":
     print(f"맞춤법 오류 {err}개 있음")
     raw.display()
     mod.display()
-
-    raw.html_output()
-    mod.html_output()
