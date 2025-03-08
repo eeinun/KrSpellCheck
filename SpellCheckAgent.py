@@ -112,7 +112,7 @@ class Agent:
     def requestSpellCheck(self, sentence, as_string=False):
         if len(sentence) > 300:
             print("글자 수는 300자를 넘을 수 없습니다.")
-            return None, None
+            return None, None, -1
         res = requests.get(
             Agent.chk_url + f"?passportKey={self.passportKey}&q={sentence}&where=nexearch&color_blindness=0",
             headers=Agent.headers
@@ -136,3 +136,4 @@ if __name__ == "__main__":
     print(f"맞춤법 오류 {err}개 있음")
     raw.display()
     mod.display()
+    print(mod.html_output())
